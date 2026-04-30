@@ -4,9 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.stereotype.Repository;
-import spring.springbootintro.exception.EntityNotFoundException;
 import spring.springbootintro.model.Book;
 import spring.springbootintro.repository.BookRepository;
 
