@@ -22,12 +22,20 @@ public class BookServiceImpl implements BookService {
     @Transactional
     public BookDto save(CreateBookRequestDto requestDto) {
         Book book = bookRepository.save(bookMapper.toModel(requestDto));
-        Book savedBook = bookRepository.save(book);
-        return bookMapper.toDto(savedBook);
+        bookRepository.save(book);
+        return bookMapper.toDto(book);
     }
 
     @Override
     public List<BookDto> findAll() {
-        return this.bookRepository.findAll().stream().map(bookMapper::toDto).toList();
+        return this.bookRepository.findAll()
+                .stream()
+                .map(bookMapper::toDto)
+                .toList();
+    }
+
+    @Override
+    public BookDto findById(Long id) {
+        return bookMapper.toDto(bookRepository.findById(id).orElse(null));
     }
 }
