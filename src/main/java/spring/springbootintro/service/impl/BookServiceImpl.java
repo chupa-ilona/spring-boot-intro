@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import spring.springbootintro.dto.BookDto;
 import spring.springbootintro.dto.CreateBookRequestDto;
+import spring.springbootintro.exception.EntityNotFoundException;
 import spring.springbootintro.mapper.BookMapper;
 import spring.springbootintro.model.Book;
 import spring.springbootintro.repository.BookRepository;
@@ -36,6 +37,8 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto findById(Long id) {
-        return bookMapper.toDto(bookRepository.findById(id).orElse(null));
+        return bookMapper.toDto(bookRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Can not find book with id: "
+                        + id)));
     }
 }
