@@ -11,4 +11,6 @@ public interface BookService {
     List<BookDto> findAll();
 
     BookDto findById(Long id);
+
+    BookDto update(Long id, CreateBookRequestDto createBookRequestDto);
 }

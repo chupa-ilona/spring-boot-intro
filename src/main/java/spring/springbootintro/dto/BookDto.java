@@ -1,14 +1,18 @@
 package spring.springbootintro.dto;
 
-import lombok.Data;
+import java.math.BigDecimal;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@RequiredArgsConstructor
+@Setter
 public class BookDto {
     private String title;
     private String author;
     private String isbn;
     private String coverImage;
     private String description;
-    private String price;
-
+    private BigDecimal price;
 }
