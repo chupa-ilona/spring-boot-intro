@@ -2,6 +2,7 @@ package spring.springbootintro.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import spring.springbootintro.dto.BookDto;
 import spring.springbootintro.dto.CreateBookRequestDto;
 import spring.springbootintro.model.Book;
@@ -14,7 +15,6 @@ public interface BookMapper {
     @Mapping(target = "deleted", ignore = true)
     Book toModel(CreateBookRequestDto createBookRequestDto);
 
-    @Mapping(target = "id", source = "bookId")
-    Book toModelWithId(CreateBookRequestDto requestDto, Long bookId);
+    void updateBookFromDto(CreateBookRequestDto book, @MappingTarget Book entity);
 
 }
