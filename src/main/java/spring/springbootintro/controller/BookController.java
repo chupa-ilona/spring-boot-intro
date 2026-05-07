@@ -22,29 +22,29 @@ import spring.springbootintro.service.BookService;
 public class BookController {
     private final BookService bookService;
 
-    @GetMapping("/books")
+    @GetMapping
     public List<BookDto> getAllBooks() {
         return bookService.findAll();
     }
 
-    @GetMapping("/books/{id}")
+    @GetMapping("/{id}")
     public BookDto getBookById(Long id) {
         return bookService.findById(id);
     }
 
-    @PostMapping("books")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public BookDto createBook(@RequestBody CreateBookRequestDto bookDto) {
         return bookService.save(bookDto);
     }
 
-    @PutMapping("/books/{id}")
+    @PutMapping("/{id}")
     public BookDto updateBook(@PathVariable Long id, @RequestBody CreateBookRequestDto bookDto) {
         return bookService.update(id, bookDto);
     }
 
-    @DeleteMapping("/books/{id}")
-    public BookDto deleteBook(Long id) {
+    @DeleteMapping("/{id}")
+    public BookDto deleteBook(@PathVariable Long id) {
         return bookService.findById(id);
     }
 }

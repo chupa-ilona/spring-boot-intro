@@ -39,6 +39,6 @@ public class Book {
 
     private String coverImage;
 
-    private boolean isDeleted;
+    private boolean isDeleted = false;
 
 }
