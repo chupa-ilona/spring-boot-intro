@@ -9,7 +9,6 @@ import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;
-import org.antlr.v4.runtime.misc.NotNull;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
@@ -22,31 +21,24 @@ import org.hibernate.annotations.SQLRestriction;
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotNull
     private Long id;
 
-    @NotNull
     @Column(nullable = false)
     private String title;
 
-    @NotNull
     @Column(nullable = false, unique = true)
     private String author;
 
-    @NotNull
     @Column(nullable = false, unique = true)
     private String isbn;
     
     @Column(nullable = false)
     private BigDecimal price;
 
-    @NotNull
     private String description;
 
-    @NotNull
     private String coverImage;
 
-    @NotNull
     private boolean isDeleted = false;
 
 }
