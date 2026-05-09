@@ -16,9 +16,7 @@ public class CreateBookRequestDto {
     private String author;
     @NotBlank
     private String isbn;
-    @NotBlank
     private String coverImage;
-    @NotBlank
     private String description;
 
     @NotNull
