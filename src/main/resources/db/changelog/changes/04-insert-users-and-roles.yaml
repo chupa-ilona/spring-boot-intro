@@ -1,0 +1,104 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-default-roles
+      author: ilonachupa
+      changes:
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: name
+                  value: ROLE_USER
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: name
+                  value: ROLE_ADMIN
+
+  - changeSet:
+      id: insert-users-with-roles
+      author: ilonachupa
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: email
+                  value: bob@example.com
+              - column:
+                  name: password
+                  value: "$2a$10$O0F7Y22d2YJ/YvJ2X8hPBuL7sL7pX5P1N1O5YhU.H1k7T0Wz6b3S."
+              - column:
+                  name: first_name
+                  value: Bob
+              - column:
+                  name: last_name
+                  value: Smith
+              - column:
+                  name: shipping_address
+                  value: Headquarters 5
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: email
+                  value: alice@example.com
+              - column:
+                  name: password
+                  value: "$2a$10$O0F7Y22d2YJ/YvJ2X8hPBuL7sL7pX5P1N1O5YhU.H1k7T0Wz6b3S."
+              - column:
+                  name: first_name
+                  value: Alice
+              - column:
+                  name: last_name
+                  value: Good
+              - column:
+                  name: shipping_address
+                  value: Shevchenko 41
+
+  - changeSet:
+      id: assign-admin-role-to-admin-user
+      author: ilonachupa
+      changes:
+        - insert:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: role_id
+                  value: 2
+        - insert:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: user_id
+                  value: 2
+              - column:
+                  name: role_id
+                  value: 1
+
+  - changeSet:
+      id: assign-user-role-to-existing-users
+      author: ilonachupa
+      changes:
+        - sql:
+            sql: >
+              INSERT INTO users_roles (user_id, role_id)
+              SELECT u.id, (SELECT r.id FROM roles r WHERE r.name = 'ROLE_USER')
+              FROM users u
+              WHERE u.id NOT IN (SELECT user_id FROM users_roles);
