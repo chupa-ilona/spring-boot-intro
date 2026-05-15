@@ -1,5 +1,6 @@
 package spring.springbootintro.model;
 
 public enum RoleName {
-    USER, ADMIN
+        ROLE_USER,
+        ROLE_ADMIN
 }

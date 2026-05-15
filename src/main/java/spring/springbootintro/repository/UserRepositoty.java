@@ -10,6 +10,6 @@ import spring.springbootintro.model.User;
 public interface UserRepositoty extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
 
-    boolean existsByEmail(@Email String email);
+    boolean existsByEmail(String email);
 }
 
