@@ -25,13 +25,11 @@ import spring.springbootintro.service.BookService;
 public class BookController {
     private final BookService bookService;
 
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping
     public Page<BookDto> getAllBooks(Pageable pageable) {
         return bookService.findAll(pageable);
     }
 
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping("/{id}")
     public BookDto getBookById(@PathVariable Long id) {
         return bookService.findById(id);
