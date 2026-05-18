@@ -32,7 +32,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(RegistrationException.class)
     public ResponseEntity<Object> handleRegistrationException(final RegistrationException ex) {
         return new ResponseEntity<>("Registration exception occurred",
-                                           HttpStatus.BAD_REQUEST);
+                                           HttpStatus.CONFLICT);
     }
 
     @Override

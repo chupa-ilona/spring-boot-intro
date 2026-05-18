@@ -23,7 +23,7 @@ public class AuthenticationController {
     private final UserService userService;
 
     @PostMapping
-    @RequestMapping("/register")
+    @RequestMapping("/registration")
     @ResponseStatus(org.springframework.http.HttpStatus.CREATED)
     @Operation(summary = "Register a new user",
             description = "Registers a new user in the system and returns the user details")

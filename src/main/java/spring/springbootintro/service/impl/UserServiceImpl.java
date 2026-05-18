@@ -1,12 +1,17 @@
 package spring.springbootintro.service.impl;
 
+import java.util.HashSet;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import spring.springbootintro.dto.UserRegistrationRequestDto;
 import spring.springbootintro.dto.UserResponseDto;
 import spring.springbootintro.exception.RegistrationException;
 import spring.springbootintro.mapper.UserMapper;
+import spring.springbootintro.model.Role;
+import spring.springbootintro.model.RoleName;
 import spring.springbootintro.model.User;
+import spring.springbootintro.repository.RoleRepository;
 import spring.springbootintro.repository.UserRepositoty;
 import spring.springbootintro.service.UserService;
 
@@ -16,6 +21,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepositoty userRepository;
     private final UserMapper userMapper;
+    private final RoleRepository roleRepository;
 
     @Override
     public UserResponseDto register(UserRegistrationRequestDto requestDto) {
@@ -25,8 +31,12 @@ public class UserServiceImpl implements UserService {
                     + " already exists");
         }
         User user = userMapper.toModel(requestDto);
+        Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
+                .orElseThrow(() -> new RegistrationException("Can't find role by name"));
+
+        user.setRoles(new HashSet<>(Set.of(userRole)));
+
         userRepository.save(user);
         return userMapper.toDto(user);
     }
-
 }
