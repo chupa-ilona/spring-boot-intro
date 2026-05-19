@@ -1,9 +1,9 @@
 package spring.springbootintro.service.impl;
 
-import java.util.HashSet;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import spring.springbootintro.dto.UserRegistrationRequestDto;
 import spring.springbootintro.dto.UserResponseDto;
 import spring.springbootintro.exception.RegistrationException;
@@ -16,6 +16,7 @@ import spring.springbootintro.repository.UserRepositoty;
 import spring.springbootintro.service.UserService;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
@@ -32,9 +33,10 @@ public class UserServiceImpl implements UserService {
         }
         User user = userMapper.toModel(requestDto);
         Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
-                .orElseThrow(() -> new RegistrationException("Can't find role by name"));
+                .orElseThrow(() -> new RegistrationException("Can't find "
+                        + RoleName.ROLE_USER + " by name"));
 
-        user.setRoles(new HashSet<>(Set.of(userRole)));
+        user.setRoles(Set.of(userRole));
 
         userRepository.save(user);
         return userMapper.toDto(user);
