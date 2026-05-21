@@ -1,4 +1,4 @@
-package spring.springbootintro.service;
+package spring.springbootintro.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -6,7 +6,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import spring.springbootintro.dto.UserLoginRequestDto;
-import spring.springbootintro.security.JwtUtil;
 
 @Service
 @RequiredArgsConstructor

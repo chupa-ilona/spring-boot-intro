@@ -13,7 +13,7 @@ import spring.springbootintro.dto.UserLoginRequestDto;
 import spring.springbootintro.dto.UserLoginResponseDto;
 import spring.springbootintro.dto.UserRegistrationRequestDto;
 import spring.springbootintro.dto.UserResponseDto;
-import spring.springbootintro.service.AuthenticationService;
+import spring.springbootintro.security.AuthenticationService;
 import spring.springbootintro.service.UserService;
 
 @Tag(name = "Authentication management",
@@ -37,10 +37,9 @@ public class AuthenticationController {
 
     @PostMapping
     @RequestMapping("/login")
-    @ResponseStatus(org.springframework.http.HttpStatus.OK)
     @Operation(summary = "Login a user",
             description = "Logs in a user and returns the user details")
-    public UserLoginResponseDto login(UserLoginRequestDto requestDto) {
+    public UserLoginResponseDto login(@RequestBody @Valid UserLoginRequestDto requestDto) {
         String token = authenticationService.authenticate(requestDto);
         return new UserLoginResponseDto(token);
     }
