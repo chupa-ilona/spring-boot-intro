@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import spring.springbootintro.dto.CategoryDto;
 import spring.springbootintro.dto.CreateCategoryRequestDto;
+import spring.springbootintro.exception.EntityNotFoundException;
 import spring.springbootintro.mapper.CategoryMapper;
 import spring.springbootintro.model.Category;
 import spring.springbootintro.repository.CategoryRepository;
@@ -36,14 +37,16 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto findById(Long id) {
         return categoryRepository.findById(id)
                 .map(categoryMapper::toDto)
-                .orElseThrow(() -> new RuntimeException("Can not find category with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Can not find "
+                         + "category with id: " + id));
     }
 
     @Override
     @Transactional
     public CategoryDto update(Long id, CreateCategoryRequestDto categoryDto) {
         Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Can not find category with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Can not find "
+                        + "category with id: " + id));
 
         categoryMapper.updateCategoryFromDto(categoryDto, category);
         return categoryMapper.toDto(categoryRepository.save(category));
@@ -53,7 +56,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public void delete(Long id) {
         if (!categoryRepository.existsById(id)) {
-            throw new RuntimeException("Can't find category by id: " + id);
+            throw new EntityNotFoundException("Can't find category by id: " + id);
         }
         categoryRepository.deleteById(id);
     }

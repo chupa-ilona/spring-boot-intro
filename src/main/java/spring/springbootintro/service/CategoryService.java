@@ -2,11 +2,9 @@ package spring.springbootintro.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 import spring.springbootintro.dto.CategoryDto;
 import spring.springbootintro.dto.CreateCategoryRequestDto;
 
-@Service
 public interface CategoryService {
 
     CategoryDto save(CreateCategoryRequestDto categoryDto);
