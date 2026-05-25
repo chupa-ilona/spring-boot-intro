@@ -29,7 +29,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Page<CategoryDto> findAll(Pageable pageable) {
-        return this.categoryRepository.findAll(pageable)
+        return categoryRepository.findAll(pageable)
                 .map(categoryMapper::toDto);
     }
 
