@@ -1,16 +1,16 @@
 package spring.springbootintro.dto;
 
 import java.math.BigDecimal;
-import java.util.Set;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-public class BookDto {
+@Getter
+@Setter
+public class BookDtoWithoutCategoryIds {
     private String title;
     private String author;
     private String isbn;
     private String coverImage;
     private String description;
     private BigDecimal price;
-    private Set<Long> categoryIds;
 }
