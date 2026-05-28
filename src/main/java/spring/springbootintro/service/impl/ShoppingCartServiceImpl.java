@@ -12,6 +12,7 @@ import spring.springbootintro.mapper.ShoppingCartMapper;
 import spring.springbootintro.model.Book;
 import spring.springbootintro.model.CartItem;
 import spring.springbootintro.model.ShoppingCart;
+import spring.springbootintro.model.User;
 import spring.springbootintro.repository.BookRepository;
 import spring.springbootintro.repository.ShoppingCartRepository;
 import spring.springbootintro.service.ShoppingCartService;
@@ -93,5 +94,11 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         return shoppingCartRepository.findByUserId(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Can't find shopping cart "
                         + "for user with id: " + userId));
+    }
+
+    public void createShoppingCartForUser(User user) {
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setUser(user);
+        shoppingCartRepository.save(shoppingCart);
     }
 }

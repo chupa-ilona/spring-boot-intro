@@ -10,11 +10,10 @@ import spring.springbootintro.exception.RegistrationException;
 import spring.springbootintro.mapper.UserMapper;
 import spring.springbootintro.model.Role;
 import spring.springbootintro.model.RoleName;
-import spring.springbootintro.model.ShoppingCart;
 import spring.springbootintro.model.User;
 import spring.springbootintro.repository.RoleRepository;
-import spring.springbootintro.repository.ShoppingCartRepository;
 import spring.springbootintro.repository.UserRepositoty;
+import spring.springbootintro.service.ShoppingCartService;
 import spring.springbootintro.service.UserService;
 
 @Service
@@ -25,7 +24,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepositoty userRepository;
     private final UserMapper userMapper;
     private final RoleRepository roleRepository;
-    private final ShoppingCartRepository shoppingCartRepository;
+    private final ShoppingCartService shoppingCartService;
 
     @Override
     public UserResponseDto register(UserRegistrationRequestDto requestDto) {
@@ -41,9 +40,7 @@ public class UserServiceImpl implements UserService {
 
         user.setRoles(Set.of(userRole));
         userRepository.save(user);
-        ShoppingCart shoppingCart = new ShoppingCart();
-        shoppingCart.setUser(user);
-        shoppingCartRepository.save(shoppingCart);
+        shoppingCartService.createShoppingCartForUser(user);
         return userMapper.toDto(user);
     }
 }
