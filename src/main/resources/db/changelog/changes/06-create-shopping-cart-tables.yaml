@@ -7,19 +7,11 @@ databaseChangeLog:
             tableName: shopping_carts
             columns:
               - column:
-                  name: id
-                  type: BIGINT
-                  autoIncrement: true
-                  constraints:
-                    primaryKey: true
-                    nullable: false
-              - column:
                   name: user_id
                   type: BIGINT
                   constraints:
+                    primaryKey: true
                     nullable: false
-                    unique: true
-                    uniqueConstraintName: uk_shopping_carts_user_id
               - column:
                   name: is_deleted
                   type: BOOLEAN
@@ -68,7 +60,7 @@ databaseChangeLog:
             baseTableName: cart_items
             baseColumnNames: shopping_cart_id
             referencedTableName: shopping_carts
-            referencedColumnNames: id
+            referencedColumnNames: user_id
             constraintName: fk_cart_items_shopping_carts
 
         - addForeignKeyConstraint:

@@ -1,8 +1,7 @@
 package spring.springbootintro.dto;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,12 +9,9 @@ import lombok.Setter;
 @Setter
 public class CreateCartItemRequestDto {
     @NotNull
+    @Positive
     private Long bookId;
 
-    @NotBlank
-    private String bookTitle;
-
-    @NotNull
-    @Min(1)
+    @Positive
     private int quantity;
 }
