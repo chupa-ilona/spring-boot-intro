@@ -1,6 +1,7 @@
 package spring.springbootintro.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,6 +20,7 @@ import spring.springbootintro.dto.ShoppingCartDto;
 import spring.springbootintro.model.User;
 import spring.springbootintro.service.ShoppingCartService;
 
+@Tag(name = "Shopping Cart management", description = "Endpoints for managing user`s shopping cart")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/cart")
@@ -27,6 +29,7 @@ public class ShoppingCartController {
 
     @GetMapping
     @PreAuthorize("hasRole('USER')")
+    @Operation(summary = "Get user`s shopping cart")
     public ShoppingCartDto getShoppingCart(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         return shoppingCartService.getCart(user.getId());
@@ -34,9 +37,11 @@ public class ShoppingCartController {
 
     @PostMapping
     @PreAuthorize("hasRole('USER')")
+    @Operation(summary = "add cart item to the shopping cart",
+            description = "Available only for all users")
     public ShoppingCartDto addCartItemToCart(Authentication authentication,
                                              @RequestBody @Valid CreateCartItemRequestDto requestDto
-                                             ) {
+    ) {
         User user = (User) authentication.getPrincipal();
         return shoppingCartService.addCartItemToCart(user.getId(), requestDto);
     }
@@ -60,10 +65,4 @@ public class ShoppingCartController {
         User user = (User) authentication.getPrincipal();
         shoppingCartService.deleteCartItem(user.getId(), cartItemId);
     }
-
 }
-
-
-
-
-
