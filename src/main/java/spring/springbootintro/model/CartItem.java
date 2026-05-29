@@ -16,10 +16,10 @@ import lombok.ToString;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
-@SQLDelete(sql = "UPDATE cartItems SET is_deleted = true WHERE id = ?")
+@SQLDelete(sql = "UPDATE cart_items SET is_deleted = true WHERE id = ?")
 @SQLRestriction("is_deleted = false")
 @Entity
-@Table(name = "cartItems")
+@Table(name = "cart_items")
 @Getter
 @Setter
 public class CartItem {
