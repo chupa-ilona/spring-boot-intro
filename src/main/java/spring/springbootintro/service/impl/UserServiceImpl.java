@@ -13,6 +13,7 @@ import spring.springbootintro.model.RoleName;
 import spring.springbootintro.model.User;
 import spring.springbootintro.repository.RoleRepository;
 import spring.springbootintro.repository.UserRepositoty;
+import spring.springbootintro.service.ShoppingCartService;
 import spring.springbootintro.service.UserService;
 
 @Service
@@ -23,6 +24,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepositoty userRepository;
     private final UserMapper userMapper;
     private final RoleRepository roleRepository;
+    private final ShoppingCartService shoppingCartService;
 
     @Override
     public UserResponseDto register(UserRegistrationRequestDto requestDto) {
@@ -37,8 +39,8 @@ public class UserServiceImpl implements UserService {
                         + RoleName.ROLE_USER + " by name"));
 
         user.setRoles(Set.of(userRole));
-
         userRepository.save(user);
+        shoppingCartService.createShoppingCartForUser(user);
         return userMapper.toDto(user);
     }
 }
