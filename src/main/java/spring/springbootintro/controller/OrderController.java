@@ -36,7 +36,8 @@ public class OrderController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Create an order",
-            description = "Creates a new order from the user's current shopping cart and clears the cart.")
+            description = "Creates a new order from the user's current"
+                    + " shopping cart and clears the cart.")
     public OrderDto createOrder(Authentication authentication,
                                @RequestBody @Valid CreateOrderRequestDto requestDto) {
         User user = (User) authentication.getPrincipal();
