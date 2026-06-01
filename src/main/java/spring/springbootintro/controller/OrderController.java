@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -48,7 +49,7 @@ public class OrderController {
     @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Get order history",
             description = "Retrieves the order history for the currently authenticated user.")
-    public List<OrderDto> getOrderHistory(Authentication authentication, Pageable pageable) {
+    public Page<OrderDto> getOrderHistory(Authentication authentication, Pageable pageable) {
         User user = (User) authentication.getPrincipal();
         return orderService.getOrderHistory(user.getId(), pageable);
     }

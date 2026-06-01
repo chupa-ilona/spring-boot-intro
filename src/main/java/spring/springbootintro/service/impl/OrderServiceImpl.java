@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +15,7 @@ import spring.springbootintro.dto.OrderDto;
 import spring.springbootintro.dto.OrderItemDto;
 import spring.springbootintro.dto.UpdateOrderStatusRequestDto;
 import spring.springbootintro.exception.EntityNotFoundException;
+import spring.springbootintro.exception.OrderProcessingException;
 import spring.springbootintro.mapper.OrderItemMapper;
 import spring.springbootintro.mapper.OrderMapper;
 import spring.springbootintro.model.CartItem;
@@ -35,10 +37,9 @@ public class OrderServiceImpl implements OrderService {
     private final OrderItemMapper orderItemMapper;
 
     @Override
-    public List<OrderDto> getOrderHistory(Long userId, Pageable pageable) {
-        return orderRepository.findAllByUserId(userId, pageable).stream()
-                .map(orderMapper::toDto)
-                .toList();
+    public Page<OrderDto> getOrderHistory(Long userId, Pageable pageable) {
+        return orderRepository.findAllByUserId(userId, pageable)
+                .map(orderMapper::toDto);
     }
 
     @Override
@@ -49,7 +50,7 @@ public class OrderServiceImpl implements OrderService {
                         + " shopping cart for user with id: " + userId));
 
         if (shoppingCart.getCartItems().isEmpty()) {
-            throw new IllegalArgumentException("Can't place order with empty shopping cart");
+            throw new OrderProcessingException("Can't place order with empty shopping cart");
         }
 
         Order order = new Order();
@@ -115,12 +116,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private Order getOrderForUser(Long userId, Long orderId) {
-        Order order = orderRepository.findById(orderId)
+        Order order = orderRepository.findByIdAndUserId(orderId, userId)
                 .orElseThrow(() -> new EntityNotFoundException("Can't find order with id: "
                         + orderId));
-        if (!order.getUser().getId().equals(userId)) {
-            throw new RuntimeException("You don't have access to this order");
-        }
         return order;
     }
 }
