@@ -18,10 +18,8 @@ import java.time.LocalDateTime;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
-import org.hibernate.type.SqlTypes;
 
 @SQLDelete(sql = "UPDATE orders SET is_deleted = true WHERE id = ?")
 @SQLRestriction("is_deleted = false")
@@ -40,8 +38,7 @@ public class Order {
     private User user;
 
     @Enumerated(EnumType.STRING)
-    @JdbcTypeCode(SqlTypes.VARCHAR)
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TINYINT")
     private Status status;
 
     @Column(nullable = false)

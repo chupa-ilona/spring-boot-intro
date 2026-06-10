@@ -15,7 +15,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: name
-                  type: VARCHAR(255)
+                  type: TINYINT
                   constraints:
                     nullable: false
                     unique: true
