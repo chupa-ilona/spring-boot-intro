@@ -33,7 +33,7 @@
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <lombok.mapstruct.binding.version>0.2.0</lombok.mapstruct.binding.version>
         <io.jsonwebtoken.version>0.12.5</io.jsonwebtoken.version>
-        <testcontainers.version>2.0.5</testcontainers.version>
+        <testcontainers.version>1.20.0</testcontainers.version>
     </properties>
 
     <dependencies>
@@ -119,17 +119,28 @@
 
         <dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>testcontainers-junit-jupiter</artifactId>
+            <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>testcontainers-mysql</artifactId>
+            <artifactId>mysql</artifactId>
             <scope>test</scope>
         </dependency>
 
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers-bom</artifactId>
+                <version>${testcontainers.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>
