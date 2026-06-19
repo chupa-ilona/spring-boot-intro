@@ -16,6 +16,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import spring.springbootintro.dto.BookDto;
 import spring.springbootintro.dto.CreateBookRequestDto;
 import spring.springbootintro.exception.EntityNotFoundException;
@@ -129,5 +133,34 @@ class BookServiceImplTest {
         verify(bookMapper, times(1)).toModel(requestDto);
         verify(bookRepository, times(1)).save(book);
         verify(bookMapper, times(1)).toDto(savedBook);
+    }
+
+    @Test
+    @DisplayName("Verify findAll() method works")
+    void findAll_ValidPageable_ShouldReturnPageOfBookDtos() {
+        // GIVEN
+        Pageable pageable = PageRequest.of(0, 10);
+        Book book = new Book();
+        book.setId(1L);
+        book.setTitle("Test Book");
+
+        BookDto bookDto = new BookDto();
+        bookDto.setId(1L);
+        bookDto.setTitle("Test Book");
+
+        Page<Book> bookPage = new PageImpl<>(java.util.List.of(book), pageable, 1);
+
+        when(bookRepository.findAll(pageable)).thenReturn(bookPage);
+        when(bookMapper.toDto(book)).thenReturn(bookDto);
+
+        // WHEN
+        Page<BookDto> actual = bookService.findAll(pageable);
+
+        // THEN
+        assertEquals(1, actual.getContent().size());
+        assertEquals(bookDto.getTitle(), actual.getContent().get(0).getTitle());
+
+        verify(bookRepository, times(1)).findAll(pageable);
+        verify(bookMapper, times(1)).toDto(book);
     }
 }
