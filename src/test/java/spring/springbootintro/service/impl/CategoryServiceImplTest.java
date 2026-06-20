@@ -153,4 +153,101 @@ class CategoryServiceImplTest {
         verify(categoryMapper, times(1)).toDto(category);
     }
 
+    @Test
+    @DisplayName("Verify update() method works correctly with valid ID")
+    void update_WithValidId_ShouldReturnUpdatedCategoryDto() {
+        // GIVEN
+        Long categoryId = 1L;
+        CreateCategoryRequestDto requestDto = new CreateCategoryRequestDto();
+        requestDto.setName("Updated Fantasy");
+
+        Category category = new Category();
+        category.setId(categoryId);
+        category.setName("Old Fantasy");
+
+        Category updatedCategory = new Category();
+        updatedCategory.setId(categoryId);
+        updatedCategory.setName("Updated Fantasy");
+
+        CategoryDto expectedDto = new CategoryDto();
+        expectedDto.setId(categoryId);
+        expectedDto.setName("Updated Fantasy");
+
+        when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(category));
+        when(categoryRepository.save(category)).thenReturn(updatedCategory);
+        when(categoryMapper.toDto(updatedCategory)).thenReturn(expectedDto);
+
+        // WHEN
+        CategoryDto actual = categoryService.update(categoryId, requestDto);
+
+        // THEN
+        assertNotNull(actual);
+        assertEquals(expectedDto.getId(), actual.getId());
+        assertEquals(expectedDto.getName(), actual.getName());
+
+        verify(categoryRepository, times(1)).findById(categoryId);
+        verify(categoryMapper, times(1)).updateCategoryFromDto(requestDto, category);
+        verify(categoryRepository, times(1)).save(category);
+        verify(categoryMapper, times(1)).toDto(updatedCategory);
+    }
+
+    @Test
+    @DisplayName("Verify update() throws exception with invalid ID")
+    void update_WithInvalidId_ShouldThrowException() {
+        // GIVEN
+        Long categoryId = 100L;
+        CreateCategoryRequestDto requestDto = new CreateCategoryRequestDto();
+        requestDto.setName("Updated Fantasy");
+
+        when(categoryRepository.findById(categoryId)).thenReturn(Optional.empty());
+
+        // WHEN
+        Exception exception = assertThrows(
+                EntityNotFoundException.class,
+                () -> categoryService.update(categoryId, requestDto)
+        );
+
+        // THEN
+        String expectedMessage = "Can not find category with id: " + categoryId;
+        assertEquals(expectedMessage, exception.getMessage());
+
+        verify(categoryRepository, times(1)).findById(categoryId);
+        verify(categoryRepository, times(0)).save(any());
+    }
+
+    @Test
+    @DisplayName("Verify delete() method works correctly with valid ID")
+    void delete_WithValidId_ShouldCallRepositoryDelete() {
+        // GIVEN
+        Long categoryId = 1L;
+        when(categoryRepository.existsById(categoryId)).thenReturn(true);
+
+        // WHEN
+        categoryService.delete(categoryId);
+
+        // THEN
+        verify(categoryRepository, times(1)).existsById(categoryId);
+        verify(categoryRepository, times(1)).deleteById(categoryId);
+    }
+
+    @Test
+    @DisplayName("Verify delete() throws exception with invalid ID")
+    void delete_WithInvalidId_ShouldThrowException() {
+        // GIVEN
+        Long categoryId = 100L;
+        when(categoryRepository.existsById(categoryId)).thenReturn(false);
+
+        // WHEN
+        Exception exception = assertThrows(
+                EntityNotFoundException.class,
+                () -> categoryService.delete(categoryId)
+        );
+
+        // THEN
+        String expectedMessage = "Can't find category by id: " + categoryId;
+        assertEquals(expectedMessage, exception.getMessage());
+
+        verify(categoryRepository, times(1)).existsById(categoryId);
+        verify(categoryRepository, times(0)).deleteById(any());
+    }
 }

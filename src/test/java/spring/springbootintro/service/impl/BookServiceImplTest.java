@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import spring.springbootintro.dto.BookDto;
+import spring.springbootintro.dto.BookDtoWithoutCategoryIds;
 import spring.springbootintro.dto.CreateBookRequestDto;
 import spring.springbootintro.exception.EntityNotFoundException;
 import spring.springbootintro.mapper.BookMapper;
@@ -67,7 +69,7 @@ class BookServiceImplTest {
         assertEquals(bookDto.getTitle(), actual.getTitle());
         assertEquals(bookDto.getAuthor(), actual.getAuthor());
 
-        verify(bookRepository, times(1)).findById(bookId);
+        verify(bookRepository).findById(bookId);
         verify(bookMapper, times(1)).toDto(book);
     }
 
@@ -130,9 +132,9 @@ class BookServiceImplTest {
         assertEquals(bookDto.getId(), actual.getId());
         assertEquals(bookDto.getTitle(), actual.getTitle());
 
-        verify(bookMapper, times(1)).toModel(requestDto);
-        verify(bookRepository, times(1)).save(book);
-        verify(bookMapper, times(1)).toDto(savedBook);
+        verify(bookMapper).toModel(requestDto);
+        verify(bookRepository).save(book);
+        verify(bookMapper).toDto(savedBook);
     }
 
     @Test
@@ -160,7 +162,132 @@ class BookServiceImplTest {
         assertEquals(1, actual.getContent().size());
         assertEquals(bookDto.getTitle(), actual.getContent().get(0).getTitle());
 
-        verify(bookRepository, times(1)).findAll(pageable);
-        verify(bookMapper, times(1)).toDto(book);
+        verify(bookRepository).findAll(pageable);
+        verify(bookMapper).toDto(book);
+    }
+
+    @Test
+    @DisplayName("Verify update() method works correctly with valid ID")
+    void update_WithValidId_ShouldReturnUpdatedBookDto() {
+        // GIVEN
+        Long bookId = 1L;
+        CreateBookRequestDto requestDto = new CreateBookRequestDto();
+        requestDto.setTitle("Updated Title");
+
+        Book book = new Book();
+        book.setId(bookId);
+        book.setTitle("Old Title");
+
+        Book updatedBook = new Book();
+        updatedBook.setId(bookId);
+        updatedBook.setTitle("Updated Title");
+
+        BookDto expectedDto = new BookDto();
+        expectedDto.setId(bookId);
+        expectedDto.setTitle("Updated Title");
+
+        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
+        when(bookRepository.save(book)).thenReturn(updatedBook);
+        when(bookMapper.toDto(updatedBook)).thenReturn(expectedDto);
+
+        // WHEN
+        BookDto actual = bookService.update(bookId, requestDto);
+
+        // THEN
+        assertNotNull(actual);
+        assertEquals(expectedDto.getId(), actual.getId());
+        assertEquals(expectedDto.getTitle(), actual.getTitle());
+
+        verify(bookRepository).findById(bookId);
+        verify(bookMapper).updateBookFromDto(requestDto, book);
+        verify(bookRepository).save(book);
+        verify(bookMapper).toDto(updatedBook);
+    }
+
+    @Test
+    @DisplayName("Verify update() throws exception with invalid ID")
+    void update_WithInvalidId_ShouldThrowException() {
+        // GIVEN
+        Long bookId = 100L;
+        CreateBookRequestDto requestDto = new CreateBookRequestDto();
+        requestDto.setTitle("Updated Title");
+
+        when(bookRepository.findById(bookId)).thenReturn(Optional.empty());
+
+        // WHEN
+        Exception exception = assertThrows(
+                EntityNotFoundException.class,
+                () -> bookService.update(bookId, requestDto)
+        );
+
+        // THEN
+        String expectedMessage = "Can not find book with id: " + bookId;
+        assertEquals(expectedMessage, exception.getMessage());
+
+        verify(bookRepository).findById(bookId);
+        verify(bookRepository, times(0)).save(any());
+    }
+
+    @Test
+    @DisplayName("Verify delete() method works correctly with valid ID")
+    void delete_WithValidId_ShouldCallRepositoryDelete() {
+        // GIVEN
+        Long bookId = 1L;
+        when(bookRepository.existsById(bookId)).thenReturn(true);
+
+        // WHEN
+        bookService.delete(bookId);
+
+        // THEN
+        verify(bookRepository).existsById(bookId);
+        verify(bookRepository).deleteById(bookId);
+    }
+
+    @Test
+    @DisplayName("Verify delete() throws exception with invalid ID")
+    void delete_WithInvalidId_ShouldThrowException() {
+        // GIVEN
+        Long bookId = 100L;
+        when(bookRepository.existsById(bookId)).thenReturn(false);
+
+        // WHEN
+        Exception exception = assertThrows(
+                EntityNotFoundException.class,
+                () -> bookService.delete(bookId)
+        );
+
+        // THEN
+        String expectedMessage = "Can't find book by id: " + bookId;
+        assertEquals(expectedMessage, exception.getMessage());
+
+        verify(bookRepository).existsById(bookId);
+        verify(bookRepository, times(0)).deleteById(any());
+    }
+
+    @Test
+    @DisplayName("Verify findAllByCategoriesId() method works")
+    void findAllByCategoriesId_ValidId_ShouldReturnListOfBookDtosWithoutCategoryIds() {
+        // GIVEN
+        Long categoryId = 1L;
+        Book book = new Book();
+        book.setId(1L);
+        book.setTitle("Test Book");
+
+        BookDtoWithoutCategoryIds bookDto = new BookDtoWithoutCategoryIds();
+        bookDto.setId(1L);
+        bookDto.setTitle("Test Book");
+
+        when(bookRepository.findAllByCategoriesId(categoryId)).thenReturn(List.of(book));
+        when(bookMapper.toDtoWithoutCategories(book)).thenReturn(bookDto);
+
+        // WHEN
+        List<BookDtoWithoutCategoryIds> actual = bookService.findAllByCategoriesId(categoryId);
+
+        // THEN
+        assertEquals(1, actual.size());
+        assertEquals(bookDto.getTitle(), actual.get(0).getTitle());
+
+        verify(bookRepository).findAllByCategoriesId(categoryId);
+        verify(bookMapper).toDtoWithoutCategories(book);
     }
 }
