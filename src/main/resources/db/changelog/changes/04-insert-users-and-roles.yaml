@@ -11,7 +11,7 @@ databaseChangeLog:
                   value: 1
               - column:
                   name: name
-                  value: ROLE_USER
+                  valueNumeric: 0
         - insert:
             tableName: roles
             columns:
@@ -20,7 +20,7 @@ databaseChangeLog:
                   value: 2
               - column:
                   name: name
-                  value: ROLE_ADMIN
+                  valueNumeric: 1
 
   - changeSet:
       id: insert-users-with-roles
@@ -99,6 +99,6 @@ databaseChangeLog:
         - sql:
             sql: >
               INSERT INTO users_roles (user_id, role_id)
-              SELECT u.id, (SELECT r.id FROM roles r WHERE r.name = 'ROLE_USER')
-              FROM users u
-              WHERE u.id NOT IN (SELECT user_id FROM users_roles);
+                            SELECT u.id, (SELECT r.id FROM roles r WHERE r.name = 0)
+                            FROM users u
+                            WHERE u.id NOT IN (SELECT user_id FROM users_roles);

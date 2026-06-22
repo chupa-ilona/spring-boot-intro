@@ -2,6 +2,8 @@ package spring.springbootintro.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,7 +21,8 @@ public class Role implements GrantedAuthority {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column (nullable = false, unique = true)
+    @Enumerated(EnumType.ORDINAL)
+    @Column(columnDefinition = "TINYINT", nullable = false, unique = true)
     private RoleName name;
 
     @Override

@@ -7,6 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class BookDtoWithoutCategoryIds {
+    private Long id;
     private String title;
     private String author;
     private String isbn;
