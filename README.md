@@ -4,7 +4,7 @@
   <p align="center">
     <b>A secure RESTful web application built with Spring Boot to demonstrate modern Java backend development practices.</b>
     <br />
-    <a href="http://localhost:8080/swagger-ui/index.html">
+    <a href="http://localhost:8087/swagger-ui/index.html">
       <strong>Explore the API Documentation »</strong>
     </a>
   </p>
